@@ -31,10 +31,8 @@ namespace MessageR
 		/// <summary>
 		/// Initialises a new instance of the GenericMessage class
 		/// </summary>
-		/// <param name="type"></param>
 		/// <param name="payload"></param>
-		public Message(string type, T payload)
-			: base(type)
+		public Message(T payload)
 		{
 			if (payload == null) throw new ArgumentNullException("payload");
 

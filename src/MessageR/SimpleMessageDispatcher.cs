@@ -12,20 +12,58 @@ namespace MessageR
 	/// </summary>
 	public class SimpleMessageDispatcher : IMessageDispatcher
 	{
+		//////////////////////////////////////////////////////////////////////
+
+		#region Members
+
+		/// <summary>
+		/// The broker to send messages to
+		/// </summary>
+		private MessageBroker broker;
+
+		#endregion
+
+		//////////////////////////////////////////////////////////////////////
+
+		#region Constructor
+
+		/// <summary>
+		/// Initialises a new instance of the SimpleMessageDispatcher
+		/// </summary>
+		/// <param name="broker"></param>
+		public SimpleMessageDispatcher(MessageBroker broker)
+		{
+			if (broker == null) throw new ArgumentNullException("broker");
+
+			this.broker = broker;
+		}
+
+		#endregion
+
+		//////////////////////////////////////////////////////////////////////
+
 		/// <summary>
 		/// Dispatches the message by sending it straight back into 
 		/// the MessageBroker for processing
 		/// </summary>
 		/// <param name="message"></param>
-		public async Task Dispatch(Message message)
+		public void Dispatch(Message message)
 		{
-			throw new NotImplementedException();
+			if (message == null) throw new ArgumentNullException("message");
+
+			broker.Receive(message);
 		}
 
-
-		public async Task<TResult> Dispatch<T, TResult>(Message<T> message)
+		/// <summary>
+		/// Dispatches the message by sending it straight back into 
+		/// the MessageBroker for processing
+		/// </summary>
+		/// <param name="message"></param>
+		public async Task DispatchAsync(Message message)
 		{
-			throw new NotImplementedException();
+			if (message == null) throw new ArgumentNullException("message");
+
+			await broker.ReceiveAsync(message);
 		}
 	}
 }

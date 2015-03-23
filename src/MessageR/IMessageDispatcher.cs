@@ -16,14 +16,13 @@ namespace MessageR
 		/// </summary>
 		/// <param name="message">The message to dispatch</param>
 		/// <returns>A task object which can be awaited</returns>
-		Task Dispatch(Message message);
+		void Dispatch(Message message);
 
 		/// <summary>
-		/// Dispatches a message with an expected response type of T
+		/// Dispatches a message
 		/// </summary>
-		/// <typeparam name="T">The type of the response to the message</typeparam>
 		/// <param name="message">The message to dispatch</param>
-		/// <returns>A task object with type T which can be awaited</returns>
-		Task<TResult> Dispatch<T, TResult>(Message<T> message);
+		/// <returns>A task object which can be awaited</returns>
+		Task DispatchAsync(Message message);
 	}
 }

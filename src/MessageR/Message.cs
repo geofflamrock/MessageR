@@ -18,11 +18,11 @@ namespace MessageR
 		/// <summary>
 		/// Gets the type of the message
 		/// </summary>
-		public string Type
-		{
-			get;
-			private set;
-		}
+		//public string Type
+		//{
+		//	get;
+		//	private set;
+		//}
 
 		/// <summary>
 		/// Gets the id of the message
@@ -40,13 +40,10 @@ namespace MessageR
 		#region Constructors
 
 		/// <summary>
-		/// Initialises a new instance of the Message class, specifying the type
+		/// Initialises a new instance of the Message class
 		/// </summary>
-		public Message(string type)
+		public Message()
 		{
-			if (type == null) throw new ArgumentNullException("type");
-
-			this.Type = type;
 			this.Id = Guid.NewGuid();
 		}
 
