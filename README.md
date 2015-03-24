@@ -32,7 +32,10 @@ To send a message, create a class inherited from the `Message` class and call on
 
 To listen to a message, use the Listen methods on the broker, passing a handler in the form of either an `Action<T>` delegate or `Func<T, Task>` delegate (to handle the message in an asynchronous fashion).
 
-    broker.Listen<TestMessage>(m => Console.WriteLine("Test message received");
+    broker.Listen<TestMessage>(m => 
+    {
+	    Console.WriteLine("Test message received");
+	});
 
 To wait for a response to a message, use the `AwaitResponse` method on the returned object from the `Send` method.
 
