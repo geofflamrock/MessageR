@@ -16,18 +16,18 @@ namespace MessageR
 		#region Properties
 
 		/// <summary>
-		/// Gets the type of the message
-		/// </summary>
-		//public string Type
-		//{
-		//	get;
-		//	private set;
-		//}
-
-		/// <summary>
 		/// Gets the id of the message
 		/// </summary>
 		public Guid Id
+		{
+			get;
+			private set;
+		}
+
+		/// <summary>
+		/// Gets the id of the message this message relates to
+		/// </summary>
+		public Guid ReferenceId
 		{
 			get;
 			private set;
@@ -45,6 +45,28 @@ namespace MessageR
 		public Message()
 		{
 			this.Id = Guid.NewGuid();
+		}
+
+		/// <summary>
+		/// Initialises a new instance of the Message class, referencing the id of another message
+		/// </summary>
+		/// <param name="referenceId"></param>
+		public Message(Guid referenceId)
+			: this()
+		{
+			ReferenceId = referenceId;
+		}
+
+		/// <summary>
+		/// Initialises a new instance of the Message class, referencing another message
+		/// </summary>
+		/// <param name="referenceMessage"></param>
+		public Message(Message referenceMessage)
+			: this()
+		{
+			if (referenceMessage == null) throw new ArgumentNullException("referenceMessage");
+
+			ReferenceId = referenceMessage.Id;
 		}
 
 		#endregion

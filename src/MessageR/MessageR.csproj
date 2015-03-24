@@ -44,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DisposableChain.cs" />
+    <Compile Include="Functions.cs" />
+    <Compile Include="ListenerToken.cs" />
+    <Compile Include="MessageBrokerExtensions.cs" />
     <Compile Include="MessageToken.cs" />
     <Compile Include="Message~1.cs" />
     <Compile Include="IMessageDispatcher.cs" />

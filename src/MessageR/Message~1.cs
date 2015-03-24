@@ -29,10 +29,22 @@ namespace MessageR
 		#region Constructors
 
 		/// <summary>
-		/// Initialises a new instance of the GenericMessage class
+		/// Initialises a new instance of the Message{T} class
 		/// </summary>
 		/// <param name="payload"></param>
 		public Message(T payload)
+		{
+			if (payload == null) throw new ArgumentNullException("payload");
+
+			this.Payload = payload;
+		}
+
+		/// <summary>
+		/// Initialises a new instance of the Message{T} class
+		/// </summary>
+		/// <param name="payload"></param>
+		public Message(T payload, Message referenceMessage)
+			: base(referenceMessage)
 		{
 			if (payload == null) throw new ArgumentNullException("payload");
 

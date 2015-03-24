@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
 namespace MessageR
 {
 	/// <summary>
-	/// Represents a chain of disposable objects that will be disposed together
+	/// Represents a token that a listener can use to performs actions on their listening to messages
 	/// </summary>
-	internal class DisposableChain : IDisposable
+	public class ListenerToken : IDisposable
 	{
 		//////////////////////////////////////////////////////////////////////
 
@@ -21,9 +22,31 @@ namespace MessageR
 		private bool isDisposed = false;
 
 		/// <summary>
-		/// List of objects to be disposed
+		/// Blocks used as part of the listening
 		/// </summary>
-		private List<IDisposable> disposables = new List<IDisposable>();
+		private List<IDataflowBlock> blocks = new List<IDataflowBlock>();
+
+		/// <summary>
+		/// Disposable references for block linkage
+		/// </summary>
+		private IDisposable disposable;
+
+		#endregion
+
+		//////////////////////////////////////////////////////////////////////
+
+		#region Properties
+
+		/// <summary>
+		/// Gets a <see cref="System.Threading.Tasks.Task"/> that represents the completion of the listening reference
+		/// </summary>
+		public Task Completion
+		{
+			get
+			{
+				return Task.WhenAll(blocks.Select<IDataflowBlock, Task>(dfb => dfb.Completion));
+			}
+		}
 
 		#endregion
 
@@ -32,11 +55,15 @@ namespace MessageR
 		#region Constructor
 
 		/// <summary>
-		/// Initialises a new instance of the DisposableChain class
+		/// Initialises a new instance of the ListenerToken class
 		/// </summary>
-		public DisposableChain()
+		internal ListenerToken(IEnumerable<IDataflowBlock> blocks, IDisposable disposable)
 		{
+			if (blocks == null) throw new ArgumentNullException("blocks");
+			if (disposable == null) throw new ArgumentNullException("disposable");
 
+			this.blocks.AddRange(blocks);
+			this.disposable = disposable;
 		}
 
 		#endregion
@@ -48,7 +75,7 @@ namespace MessageR
 		/// <summary>
 		/// Destructor, used to implement IDisposable
 		/// </summary>
-		~DisposableChain()
+		~ListenerToken()
 		{
 			//
 			// Call Dispose()
@@ -63,27 +90,14 @@ namespace MessageR
 		#region Public Methods
 
 		/// <summary>
-		/// Adds an IDisposable object to the chain, and returns the chain itself
+		/// Stops listening on any messages
 		/// </summary>
-		/// <returns></returns>
-		public DisposableChain AddDisposable(IDisposable disposable)
+		public void StopListening()
 		{
-			if (disposable == null) throw new ArgumentNullException("disposable");
-
-			disposables.Add(disposable);
-			return this;
-		}
-
-		/// <summary>
-		/// Adds an enumerable of IDisposable objects to the chain, and returns the chain itself
-		/// </summary>
-		/// <returns></returns>
-		public DisposableChain AddDisposable(IEnumerable<IDisposable> disposables)
-		{
-			if (disposables == null) throw new ArgumentNullException("disposable");
-
-			this.disposables.AddRange(disposables);
-			return this;
+			foreach (IDataflowBlock block in blocks)
+			{
+				block.Complete();
+			}
 		}
 
 		#endregion
@@ -129,10 +143,8 @@ namespace MessageR
 					//
 					// Release any resources required
 					//
-					foreach (IDisposable disposable in disposables)
-					{
-						disposable.Dispose();
-					}
+					StopListening();
+					disposable.Dispose();
 				}
 			}
 
@@ -140,7 +152,7 @@ namespace MessageR
 		}
 
 		#endregion
-
-		///////////////////////////////////////////////////////////////////////
+		
+		//////////////////////////////////////////////////////////////////////
 	}
 }

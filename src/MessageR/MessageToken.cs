@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MessageR
 {
+	/// <summary>
+	/// Represents a token for interacting with a <see cref="MessageR.Message"/> that has been sent
+	/// </summary>
 	public class MessageToken
 	{
 		//////////////////////////////////////////////////////////////////////
@@ -17,6 +20,11 @@ namespace MessageR
 		/// </summary>
 		private MessageBroker broker;
 
+		/// <summary>
+		/// The message this token relates
+		/// </summary>
+		private Message message;
+
 		#endregion
 
 		//////////////////////////////////////////////////////////////////////
@@ -27,11 +35,13 @@ namespace MessageR
 		/// Initialises an instance of the MessageToken with a reference to a MessageBroker
 		/// </summary>
 		/// <param name="broker"></param>
-		public MessageToken(MessageBroker broker)
+		public MessageToken(MessageBroker broker, Message message)
 		{
 			if (broker == null) throw new ArgumentNullException("broker");
-
+			if (message == null) throw new ArgumentNullException("message");
+			
 			this.broker = broker;
+			this.message = message;
 		}
 
 		#endregion
@@ -44,20 +54,38 @@ namespace MessageR
 		/// Awaits a response to the message associated with the MessageToken
 		/// </summary>
 		/// <returns>A Task object which can be awaited on until a response is received to the Message</returns>
-		//public async Task AwaitResponse()
-		//{
-			
-		//}
+		public async Task AwaitResponse()
+		{
+			ListenerToken token = null;
+
+			token = broker.Listen(m => m.ReferenceId == message.Id, m =>
+			{
+				token.StopListening();
+			});
+
+			await token.Completion;
+		}
 
 		/// <summary>
 		/// Awaits a response to the message associated with the MessageToken with a given response message
 		/// </summary>
 		/// <typeparam name="TResult"></typeparam>
 		/// <returns>A Task object which can be awaited on until a response is received to the Message</returns>
-		//public async Task<TResult> AwaitResponse<TResult>()
-		//{
+		public async Task<T> AwaitResponse<T>() where T : Message
+		{
+			ListenerToken token = null;
 
-		//}
+			T result = default(T);
+
+			token = broker.ListenOnce<T>(m => m.ReferenceId == message.Id, m =>
+			{
+				result = m;
+			});
+
+			await token.Completion;
+
+			return result;
+		}
 
 		#endregion
 

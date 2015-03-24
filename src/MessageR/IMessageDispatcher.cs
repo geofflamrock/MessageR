@@ -15,7 +15,6 @@ namespace MessageR
 		/// Dispatches a message
 		/// </summary>
 		/// <param name="message">The message to dispatch</param>
-		/// <returns>A task object which can be awaited</returns>
 		void Dispatch(Message message);
 
 		/// <summary>
