@@ -8,7 +8,7 @@ using System.Threading.Tasks.Dataflow;
 namespace MessageR
 {
 	/// <summary>
-	/// Extension methods for the MessageBroker class
+	/// Extension methods for the <see cref="IMessageBroker"/> interface
 	/// </summary>
 	public static class MessageBrokerExtensions
 	{
@@ -19,7 +19,7 @@ namespace MessageR
 		/// <param name="broker"></param>
 		/// <param name="handler"></param>
 		/// <returns></returns>
-		public static ListenerToken ListenOnce<T>(this MessageBroker broker, Action<T> handler) where T : Message
+		public static ListenerToken ListenOnce<T>(this IMessageBroker broker, Action<T> handler) where T : Message
 		{
 			if (handler == null) throw new ArgumentNullException("handler");
 
@@ -45,7 +45,7 @@ namespace MessageR
 		/// <param name="broker"></param>
 		/// <param name="handler"></param>
 		/// <returns></returns>
-		public static ListenerToken ListenOnce<T>(this MessageBroker broker, Predicate<T> predicate, Action<T> handler) where T : Message
+		public static ListenerToken ListenOnce<T>(this IMessageBroker broker, Predicate<T> predicate, Action<T> handler) where T : Message
 		{
 			if (handler == null) throw new ArgumentNullException("handler");
 

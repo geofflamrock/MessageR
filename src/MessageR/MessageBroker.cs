@@ -32,7 +32,7 @@ namespace MessageR
 	///	A <see cref="MessageR.ListenerToken"/> is returned, which may be used to Stop listening for messages.
 	/// </para>
 	/// </remarks>
-	public class MessageBroker
+	public class MessageBroker : IMessageBroker
 	{
 		//////////////////////////////////////////////////////////////////////
 
@@ -100,11 +100,11 @@ namespace MessageR
 		//////////////////////////////////////////////////////////////////////
 
 		#region Public Methods
-		
+
 		/// <summary>
-		/// Adds a dispatcher to the broker which handles all message types
+		/// Adds a dispatcher to the broker which handles all messages
 		/// </summary>
-		/// <param name="dispatcher"></param>
+		/// <param name="dispatcher">The dispatcher to add</param>
 		public void AddDispatcher(IMessageDispatcher dispatcher)
 		{
 			if (dispatcher == null) throw new ArgumentNullException("dispatcher");
@@ -139,7 +139,7 @@ namespace MessageR
 		/// <summary>
 		/// Removes a dispatcher from the broker
 		/// </summary>
-		/// <param name="dispatcher"></param>
+		/// <param name="dispatcher">The dispatcher to remove</param>
 		public void RemoveDispatcher(IMessageDispatcher dispatcher)
 		{
 			if (dispatcher == null) throw new ArgumentNullException("dispatcher");
@@ -155,9 +155,9 @@ namespace MessageR
 		/// <summary>
 		/// Sends a message through the broker
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="message"></param>
-		/// <returns></returns>
+		/// <typeparam name="T">Must inherit from <see cref="Message"/></typeparam>
+		/// <param name="message">The message to be sent</param>
+		/// <returns>A <see cref="MessageToken"/> which allows interaction with the sent message</returns>
 		public MessageToken Send<T>(T message) where T : Message
 		{
 			if (message == null) throw new ArgumentNullException("message");
@@ -168,11 +168,11 @@ namespace MessageR
 		}
 
 		/// <summary>
-		/// Sends a message through the broker asynchronously
+		/// Sends a message through the broker asyncronously
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="message"></param>
-		/// <returns></returns>
+		/// <typeparam name="T">Must inherit from <see cref="Message"/></typeparam>
+		/// <param name="message">The message to be sent</param>
+		/// <returns>A <see cref="MessageToken"/> which allows interaction with the sent message</returns>
 		public async Task<MessageToken> SendAsync<T>(T message) where T : Message
 		{
 			if (message == null) throw new ArgumentNullException("message");
@@ -205,10 +205,11 @@ namespace MessageR
 		}
 
 		/// <summary>
-		/// Listens to a message of type T, providing a handler for the message
+		/// Listens to a message of type T, providing an awaitable handler for the message
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="handler"></param>
+		/// <typeparam name="T">The type of message to listen to</typeparam>
+		/// <param name="handler">The handler for messages received</param>
+		/// <returns>A <see cref="ListenerToken"/> which can be used to stop listening</returns>
 		public ListenerToken Listen<T>(Func<T, Task> handler) where T : Message
 		{
 			if (handler == null) throw new ArgumentNullException("handler");
@@ -217,10 +218,12 @@ namespace MessageR
 		}
 
 		/// <summary>
-		/// Listens to a message of type T, providing a handler for the message
+		/// Listens to a message of type T matching the given <see cref="Predicate{T}"/>, providing an awaitable handler for the message
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="handler"></param>
+		/// <typeparam name="T">The type of message to listen to</typeparam>
+		/// <param name="handler">The handler for messages received</param>
+		/// <param name="predicate">The Predicate used to match the received message to the listener</param>
+		/// <returns>A <see cref="ListenerToken"/> which can be used to stop listening</returns>
 		public ListenerToken Listen<T>(Predicate<T> predicate, Func<T, Task> handler) where T : Message
 		{
 			if (handler == null) throw new ArgumentNullException("handler");
@@ -238,8 +241,9 @@ namespace MessageR
 		/// <summary>
 		/// Listens to a message of type T, providing a handler for the message
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="handler"></param>
+		/// <typeparam name="T">The type of message to listen to</typeparam>
+		/// <param name="handler">The handler for messages received</param>
+		/// <returns>A <see cref="ListenerToken"/> which can be used to stop listening</returns>
 		public ListenerToken Listen<T>(Action<T> handler) where T : Message
 		{
 			if (handler == null) throw new ArgumentNullException("handler");
@@ -248,10 +252,12 @@ namespace MessageR
 		}
 
 		/// <summary>
-		/// Listens to a message of type T, providing a handler for the message
+		/// Listens to a message of type T matching the given <see cref="Predicate{T}"/>, providing a handler for the message
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="handler"></param>
+		/// <typeparam name="T">The type of message to listen to</typeparam>
+		/// <param name="handler">The handler for messages received</param>
+		/// <param name="predicate">The Predicate used to match the received message to the listener</param>
+		/// <returns>A <see cref="ListenerToken"/> which can be used to stop listening</returns>
 		public ListenerToken Listen<T>(Predicate<T> predicate, Action<T> handler) where T : Message
 		{
 			if (handler == null) throw new ArgumentNullException("handler");
@@ -269,8 +275,8 @@ namespace MessageR
 		/// <summary>
 		/// Listens for message(s) matching the given <see cref="System.Predicate{Message}"/>, providing a handler for messages received
 		/// </summary>
-		/// <param name="predicate"></param>
-		/// <param name="handler"></param>
+		/// <param name="predicate">The Predicate used to match the received message to the listener</param>
+		/// <param name="handler">The handler for messages received</param>
 		public ListenerToken Listen(Predicate<Message> predicate, Action<Message> handler)
 		{
 			if (predicate == null) throw new ArgumentNullException("predicate");
@@ -285,10 +291,10 @@ namespace MessageR
 		}
 
 		/// <summary>
-		/// Listens for message(s) matching the given <see cref="System.Predicate{Message}"/>, providing a handler for messages received
+		/// Listens for message(s) matching the given <see cref="System.Predicate{Message}"/>, providing an awaitable handler for messages received
 		/// </summary>
-		/// <param name="predicate"></param>
-		/// <param name="handler"></param>
+		/// <param name="predicate">The Predicate used to match the received message to the listener</param>
+		/// <param name="handler">The handler for messages received</param>
 		public ListenerToken Listen(Predicate<Message> predicate, Func<Message, Task> handler)
 		{
 			if (predicate == null) throw new ArgumentNullException("predicate");

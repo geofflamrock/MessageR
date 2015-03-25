@@ -19,7 +19,7 @@ namespace MessageR
 		/// <summary>
 		/// The broker to send messages to
 		/// </summary>
-		private MessageBroker broker;
+		private IMessageBroker broker;
 
 		#endregion
 
@@ -31,7 +31,7 @@ namespace MessageR
 		/// Initialises a new instance of the MessageDispatcher
 		/// </summary>
 		/// <param name="broker"></param>
-		public MessageDispatcher(MessageBroker broker)
+		public MessageDispatcher(IMessageBroker broker)
 		{
 			if (broker == null) throw new ArgumentNullException("broker");
 
