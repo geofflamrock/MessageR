@@ -21,5 +21,16 @@ namespace MessageR
 		{
 			return t;
 		}
+
+		/// <summary>
+		/// Function that always returns true
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="t"></param>
+		/// <returns></returns>
+		public static bool True<T>(T t)
+		{
+			return true;
+		}
 	}
 }

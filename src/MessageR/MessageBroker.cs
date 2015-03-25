@@ -213,7 +213,7 @@ namespace MessageR
 		{
 			if (handler == null) throw new ArgumentNullException("handler");
 
-			return Listen<T>(t => true, handler);
+			return Listen<T>(Functions.True, handler);
 		}
 
 		/// <summary>
@@ -244,7 +244,7 @@ namespace MessageR
 		{
 			if (handler == null) throw new ArgumentNullException("handler");
 
-			return Listen<T>(t => true, handler);		
+			return Listen<T>(Functions.True, handler);		
 		}
 
 		/// <summary>

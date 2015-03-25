@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace MessageR
 {
 	/// <summary>
-	/// The SimpleMessageDispatcher takes a message sent to it and sends it back
+	/// The MessageDispatcher takes a message sent to it and passes it on
 	/// to the MessageBroker for processing.
 	/// </summary>
-	public class SimpleMessageDispatcher : IMessageDispatcher
+	public class MessageDispatcher : IMessageDispatcher
 	{
 		//////////////////////////////////////////////////////////////////////
 
@@ -28,10 +28,10 @@ namespace MessageR
 		#region Constructor
 
 		/// <summary>
-		/// Initialises a new instance of the SimpleMessageDispatcher
+		/// Initialises a new instance of the MessageDispatcher
 		/// </summary>
 		/// <param name="broker"></param>
-		public SimpleMessageDispatcher(MessageBroker broker)
+		public MessageDispatcher(MessageBroker broker)
 		{
 			if (broker == null) throw new ArgumentNullException("broker");
 

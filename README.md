@@ -17,9 +17,9 @@ Construct `MessageBroker` or use singleton `Instance` property if desired.
 
     MessageBroker broker = new MessageBroker();
 
-Add a dispatcher to the broker. To broker messages in-process, use the `SimpleMessageDispatcher`.
+Add a dispatcher to the broker. To broker messages in-process, use `MessageDispatcher`.
 
-    broker.AddDispatcher(new SimpleMessageDispatcher(broker));
+    broker.AddDispatcher(new MessageDispatcher(broker));
 
 To send a message, create a class inherited from the `Message` class and call one of `Send` or `SendAsync` on the broker. To send a generic payload use the generic `Message<T>` class.
 
