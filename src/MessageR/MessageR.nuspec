@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MessageR</id>
+    <version>0.1.0</version>
+    <authors>Geoff Lamrock</authors>
+    <owners>Geoff Lamrock</owners>
+    <description>A simple but extensible message broker for .NET</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <dependencies>
+      <dependency id="Microsoft.Tpl.Dataflow" version="4.5.24" />
+    </dependencies>
+  </metadata>
+</package>

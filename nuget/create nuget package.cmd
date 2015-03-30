@@ -1,0 +1,1 @@
+..\src\.nuget\NuGet.exe pack ..\src\MessageR\MessageR.csproj -Properties Configuration=Release
