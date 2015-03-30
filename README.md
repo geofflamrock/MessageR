@@ -1,5 +1,5 @@
 # MessageR
-A simple but extensible message broker for .NET
+A simple but extensible message broker for .NET based on the TPL Dataflow Library
 
 Provides message passing between loosely coupled components (often referred to as an Actor pattern).
 
