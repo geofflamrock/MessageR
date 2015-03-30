@@ -100,6 +100,17 @@ namespace MessageR
 			}
 		}
 
+		/// <summary>
+		/// Stops listening on any messages with the given exception
+		/// </summary>
+		public void StopListening(Exception ex)
+		{
+			foreach (IDataflowBlock block in blocks)
+			{
+				block.Fault(ex);
+			}
+		}
+
 		#endregion
 
 		//////////////////////////////////////////////////////////////////////

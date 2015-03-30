@@ -13,6 +13,29 @@ namespace MessageR
 	public static class MessageBrokerExtensions
 	{
 		/// <summary>
+		/// Listens for a message with the given type once and then stops listening, without providing a handler
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="broker"></param>
+		/// <returns></returns>
+		public static ListenerToken ListenOnce<T>(this IMessageBroker broker) where T : Message
+		{
+			return ListenOnce<T>(broker, Functions.True, m => { });
+		}
+
+		/// <summary>
+		/// Listens for a message with the given type once and then stops listening, providing a predicate but no handler
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="predicate"></param>
+		/// <param name="broker"></param>
+		/// <returns></returns>
+		public static ListenerToken ListenOnce<T>(this IMessageBroker broker, Predicate<T> predicate) where T : Message
+		{
+			return ListenOnce<T>(broker, predicate, m => { });
+		}
+
+		/// <summary>
 		/// Listens for a message with the given type once and then stops listening
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -23,19 +46,7 @@ namespace MessageR
 		{
 			if (handler == null) throw new ArgumentNullException("handler");
 
-			ListenerToken token = null;
-
-			Action<T> handlerWrapped = new Action<T>(t =>
-			{
-				// Stop listening first then pass to the handler
-				token.StopListening();
-
-				handler(t);
-			});
-
-			token = broker.Listen<T>(handlerWrapped);
-
-			return token;
+			return ListenOnce<T>(broker, Functions.True, handler);			
 		}
 
 		/// <summary>
@@ -54,8 +65,13 @@ namespace MessageR
 			Action<T> handlerWrapped = new Action<T>(t =>
 			{
 				// Stop listening first then pass to the handler
-				token.StopListening();
+				if (t.Exception != null)
+				{
+					token.StopListening(t.Exception);
+					return;
+				}
 
+				token.StopListening();
 				handler(t);
 			});
 

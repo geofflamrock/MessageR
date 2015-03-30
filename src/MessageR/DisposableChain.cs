@@ -9,7 +9,7 @@ namespace MessageR
 	/// <summary>
 	/// Represents a chain of disposable objects that will be disposed together
 	/// </summary>
-	internal class DisposableChain : IDisposable
+	public class DisposableChain : IDisposable
 	{
 		//////////////////////////////////////////////////////////////////////
 
@@ -78,7 +78,7 @@ namespace MessageR
 		/// Adds an enumerable of IDisposable objects to the chain, and returns the chain itself
 		/// </summary>
 		/// <returns></returns>
-		public DisposableChain AddDisposable(IEnumerable<IDisposable> disposables)
+		public DisposableChain AddDisposables(IEnumerable<IDisposable> disposables)
 		{
 			if (disposables == null) throw new ArgumentNullException("disposable");
 

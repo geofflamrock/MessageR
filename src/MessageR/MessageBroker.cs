@@ -231,7 +231,17 @@ namespace MessageR
 			DisposableChain disposableChain = new DisposableChain();
 
 			TransformBlock<Message, T> transformBlock = new TransformBlock<Message, T>(m => (T)m);
-			ActionBlock<T> handlerBlock = new ActionBlock<T>(t => handler(t));
+			ActionBlock<T> handlerBlock = new ActionBlock<T>(t =>
+			{
+				try
+				{
+					handler(t);
+				}
+				catch (Exception ex)
+				{
+					RaiseExceptionMessage(t, ex);
+				}
+			});
 			disposableChain.AddDisposable(transformBlock.LinkTo(handlerBlock, predicate));
 			disposableChain.AddDisposable(receiveBlock.LinkTo(transformBlock, m => typeof(T).IsAssignableFrom(m.GetType())));
 
@@ -265,7 +275,17 @@ namespace MessageR
 			DisposableChain disposableChain = new DisposableChain();
 
 			TransformBlock<Message, T> transformBlock = new TransformBlock<Message, T>(m => (T)m);
-			ActionBlock<T> handlerBlock = new ActionBlock<T>(t => handler(t));
+			ActionBlock<T> handlerBlock = new ActionBlock<T>(t =>
+			{
+				try
+				{
+					handler(t);
+				}
+				catch (Exception ex)
+				{
+					RaiseExceptionMessage(t, ex);
+				}
+			});
 			disposableChain.AddDisposable(transformBlock.LinkTo(handlerBlock, predicate));
 			disposableChain.AddDisposable(receiveBlock.LinkTo(transformBlock, m => typeof(T).IsAssignableFrom(m.GetType())));
 
@@ -284,7 +304,14 @@ namespace MessageR
 
 			ActionBlock<Message> handlerBlock = new ActionBlock<Message>(m =>
 			{
-				handler(m);
+				try
+				{
+					handler(m);
+				}
+				catch (Exception ex)
+				{
+					RaiseExceptionMessage(m, ex);
+				}
 			});
 
 			return new ListenerToken(new IDataflowBlock[] { handlerBlock}, receiveBlock.LinkTo(handlerBlock, predicate));
@@ -302,10 +329,33 @@ namespace MessageR
 
 			ActionBlock<Message> handlerBlock = new ActionBlock<Message>(m =>
 			{
-				handler(m);
+				try
+				{
+					handler(m);
+				}
+				catch (Exception ex)
+				{
+					RaiseExceptionMessage(m, ex);
+				}
 			});
 
 			return new ListenerToken(new IDataflowBlock[] { handlerBlock }, receiveBlock.LinkTo(handlerBlock, predicate));
+		}
+
+		#endregion
+
+		//////////////////////////////////////////////////////////////////////
+
+		#region Private Methods
+
+		/// <summary>
+		/// Raises an exception message based on the message and exception supplied
+		/// </summary>
+		/// <param name="message">The message being handled at the time of the exception</param>
+		/// <param name="exception">The exception to raise</param>
+		private void RaiseExceptionMessage(Message message, Exception exception)
+		{
+			Send<Message>(new Message(message, exception));
 		}
 
 		#endregion

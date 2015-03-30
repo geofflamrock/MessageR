@@ -58,10 +58,7 @@ namespace MessageR
 		{
 			ListenerToken token = null;
 
-			token = broker.Listen(m => m.ReferenceId == message.Id, m =>
-			{
-				token.StopListening();
-			});
+			token = broker.ListenOnce<Message>(m => m.ReferenceId == message.Id);
 
 			await token.Completion;
 		}

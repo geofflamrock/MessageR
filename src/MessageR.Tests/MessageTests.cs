@@ -36,10 +36,10 @@ namespace MessageR.Tests
 		}
 
 		/// <summary>
-		/// Checks that the Message constructor overload for a reference message does sets Id and ReferenceId properties
+		/// Checks that the Message constructor overload for a reference message does sets properties correctly
 		/// </summary>
 		[Test]
-		public void Message_ReferenceMessageIdsAreSet()
+		public void Message_ReferenceMessagePropertiesAreSet()
 		{
 			Message m1 = new Message();
 			Message m2 = new Message(m1);
@@ -47,6 +47,34 @@ namespace MessageR.Tests
 			Assert.AreNotEqual(Guid.Empty, m1.Id, "Message1.Id is not being set correctly");
 			Assert.AreNotEqual(Guid.Empty, m2.Id, "Message2.Id is not being set correctly");
 			Assert.AreEqual(m1.Id, m2.ReferenceId, "Message.ReferenceId is not being set to the reference message Id");
+		}
+
+		/// <summary>
+		/// Checks that the Message constructor overload for a reference message and exception does null checks.
+		/// </summary>
+		[Test]
+		public void Message_ExceptionArgumentNull()
+		{
+			Assert.Catch<ArgumentNullException>(() =>
+			{
+				Message m = new Message(new Message(), null);
+			}, "Message constructor is not checking null on exception");
+		}
+
+		/// <summary>
+		/// Checks that the Message constructor overload for a reference message and exception sets properties correctly
+		/// </summary>
+		[Test]
+		public void Message_AllPropertiesAreSet()
+		{
+			Message m1 = new Message();
+			Exception ex = new Exception("Exception");
+			Message m2 = new Message(m1, ex);
+
+			Assert.AreNotEqual(Guid.Empty, m1.Id, "Message1.Id is not being set correctly");
+			Assert.AreNotEqual(Guid.Empty, m2.Id, "Message2.Id is not being set correctly");
+			Assert.AreEqual(m1.Id, m2.ReferenceId, "Message.ReferenceId is not being set to the reference message Id");
+			Assert.AreEqual(ex, m2.Exception, "Message.Exception is not being set correctly");
 		}
 	}
 }

@@ -33,6 +33,15 @@ namespace MessageR
 			private set;
 		}
 
+		/// <summary>
+		/// Gets any exception associated with the message
+		/// </summary>
+		public Exception Exception
+		{
+			get;
+			private set;
+		}
+
 		#endregion
 
 		//////////////////////////////////////////////////////////////////////
@@ -48,16 +57,6 @@ namespace MessageR
 		}
 
 		/// <summary>
-		/// Initialises a new instance of the Message class, referencing the id of another message
-		/// </summary>
-		/// <param name="referenceId"></param>
-		public Message(Guid referenceId)
-			: this()
-		{
-			ReferenceId = referenceId;
-		}
-
-		/// <summary>
 		/// Initialises a new instance of the Message class, referencing another message
 		/// </summary>
 		/// <param name="referenceMessage"></param>
@@ -67,6 +66,18 @@ namespace MessageR
 			if (referenceMessage == null) throw new ArgumentNullException("referenceMessage");
 
 			ReferenceId = referenceMessage.Id;
+		}
+
+		/// <summary>
+		/// Initialises a new instance of the Message class with a referenced message and an exception
+		/// </summary>
+		/// <param name="exception"></param>
+		public Message(Message referenceMessage, Exception exception)
+			: this(referenceMessage)
+		{
+			if (exception == null) throw new ArgumentNullException("exception");
+
+			this.Exception = exception;
 		}
 
 		#endregion
