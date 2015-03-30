@@ -5,7 +5,7 @@
     <version>0.1.0</version>
     <authors>Geoff Lamrock</authors>
     <owners>Geoff Lamrock</owners>
-    <description>A simple but extensible message broker for .NET</description>
+    <description>$description$</description>
     <releaseNotes>Initial release</releaseNotes>
     <copyright>Copyright 2015</copyright>
     <dependencies>
